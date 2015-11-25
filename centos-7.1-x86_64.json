@@ -1,0 +1,45 @@
+{
+    "builders": [{
+	"type": "qemu",
+	"iso_url": "http://mirror.pcextreme.nl/centos/7.1.1503/isos/x86_64/CentOS-7-x86_64-NetInstall-1503.iso",
+	"iso_checksum": "111379a06402e1e445c6aeee9401d031",
+	"iso_checksum_type": "md5",
+	"output_directory": "packer_output",
+	"ssh_wait_timeout": "30s",
+	"shutdown_command": "shutdown -P now",
+	"disk_size": 10000,
+	"format": "qcow2",
+	"headless": true,
+	"accelerator": "kvm",
+	"http_directory": "http",
+	"http_port_min": 10082,
+	"http_port_max": 10089,
+	"ssh_host_port_min": 2222,
+	"ssh_host_port_max": 2229,
+	"ssh_username": "root",
+	"ssh_password": "TempInstallPW",
+	"ssh_port": 22,
+	"ssh_wait_timeout": "90m",
+	"vm_name": "centost71",
+	"net_device": "virtio-net-pci",
+	"disk_interface": "virtio",
+	"boot_wait": "5s",
+	"boot_command": [
+	    "<esc>",
+	    "<wait>",
+	    "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/kickstart/centos-7.1-x86_64.ks",
+	    "<enter>"
+	]
+    }],
+    "provisioners": [{
+	"type": "shell",
+	"scripts": [
+	    "scripts/centos-7.1/repo.sh",
+	    "scripts/centos-7.1/init.sh",
+	    "scripts/common/sshd.sh",
+	    "scripts/centos-7.1/locale.sh",
+	    "scripts/centos-7.1/cleanup.sh",
+	    "scripts/common/minimize.sh"
+	]
+    }]
+}
